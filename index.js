@@ -2,14 +2,14 @@ let state = {
   products: [
     { id: 1, name: "beetroot", price: 0.35, inCart: 0 },
     { id: 2, name: "carrot", price: 0.25, inCart: 0 },
-    { id: 3, name: "apple", price: 0.15, inCart: 0 },
-    { id: 4, name: "apricot", price: 0.25, inCart: 0 },
-    { id: 5, name: "avocado", price: 0.15, inCart: 0 },
-    { id: 6, name: "bananas", price: 0.15, inCart: 0 },
-    { id: 7, name: "bell-pepper", price: 0.15, inCart: 0 },
-    { id: 8, name: "berry", price: 0.15, inCart: 0 },
+    { id: 3, name: "apple", price: 0.3, inCart: 0 },
+    { id: 4, name: "apricot", price: 0.15, inCart: 0 },
+    { id: 5, name: "avocado", price: 1.25, inCart: 0 },
+    { id: 6, name: "bananas", price: 0.2, inCart: 0 },
+    { id: 7, name: "bell-pepper", price: 1.15, inCart: 0 },
+    { id: 8, name: "berry", price: 0.1, inCart: 0 },
     { id: 9, name: "blueberry", price: 0.15, inCart: 0 },
-    { id: 10, name: "eggplant", price: 0.15, inCart: 0 },
+    { id: 10, name: "eggplant", price: 2.1, inCart: 0 },
   ],
 };
 
@@ -28,7 +28,7 @@ function getTotal() {
     total += product.price * product.inCart;
   }
 
-  return total;
+  return total.toFixed(2);
 }
 
 function getCartProducts() {
@@ -36,9 +36,6 @@ function getCartProducts() {
   return cartProducts;
 }
 
-function addToCart() {
-  //could be the same as increaseQuantity
-}
 function increaseQuantity(product) {
   product.inCart++;
 }
@@ -74,11 +71,54 @@ function renderStoreProducts() {
 }
 
 function renderCart() {
-  //clean ul then render cart
+  let cartList = document.querySelector(".item-list.cart--item-list");
+  cartList.textContent = "";
+
+  for (let product of getCartProducts()) {
+    let cartItem = document.createElement("li");
+
+    let cartProductImg = document.createElement("img");
+    cartProductImg.className = "cart--item-icon";
+    cartProductImg.src = getImgSrc(product);
+    cartProductImg.alt = product.name;
+
+    let productName = document.createElement("p");
+    productName.textContent = product.name;
+
+    let decreaseQuantityBtn = document.createElement("button");
+    decreaseQuantityBtn.className = "quantity-btn.remove-btn.center";
+    decreaseQuantityBtn.textContent = "-";
+    decreaseQuantityBtn.addEventListener("click", () => {
+      decreaseQuantity(product);
+      render();
+    });
+
+    let productQuantity = document.createElement("span");
+    productQuantity.className = "quantity-text.center";
+    productQuantity.textContent = product.inCart;
+
+    let increaseQuantityBtn = document.createElement("button");
+    increaseQuantityBtn.className = "quantity-btn.add-btn.center";
+    increaseQuantityBtn.textContent = "+";
+    increaseQuantityBtn.addEventListener("click", () => {
+      increaseQuantity(product);
+      render();
+    });
+
+    cartItem.append(
+      cartProductImg,
+      productName,
+      decreaseQuantityBtn,
+      productQuantity,
+      increaseQuantityBtn
+    );
+    cartList.append(cartItem);
+  }
 }
 
 function renderTotal() {
-  //render total
+  let totalAmount = document.querySelector(".total-number");
+  totalAmount.textContent = getTotal();
 }
 
 function render() {
@@ -86,3 +126,5 @@ function render() {
   renderCart();
   renderTotal();
 }
+
+render();
